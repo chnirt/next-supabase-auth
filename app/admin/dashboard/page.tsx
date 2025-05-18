@@ -1,8 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
-import { LogoutButton } from "@/components/LogoutButton";
 
-export default async function HomePage() {
+export default async function AdminDashboard() {
   const supabase = await createClient();
   const {
     data: { session },
@@ -12,22 +11,15 @@ export default async function HomePage() {
     redirect("/login");
   }
 
-  // Fetch user profile to check role
   const { data: profile } = await supabase
     .from("profiles")
     .select("role")
     .eq("id", session.user.id)
     .single();
 
-  if (profile?.role === "admin") {
-    redirect("/admin/dashboard"); // Redirect admin to admin dashboard
+  if (profile?.role !== "admin") {
+    redirect("/unauthorized"); // Or show an unauthorized access page
   }
 
-  // Redirect regular users to the normal user page
-  return (
-    <div>
-      Welcome user {session.user.email}
-      <LogoutButton />
-    </div>
-  );
+  return <div>Welcome Admin {session.user.email}</div>;
 }
