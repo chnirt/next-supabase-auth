@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { LogoutButton } from "@/components/LogoutButton";
+import { getProfile } from "@/services/profile";
 
 export default async function HomePage() {
   const supabase = await createClient();
@@ -12,12 +13,7 @@ export default async function HomePage() {
     redirect("/login");
   }
 
-  // Fetch user profile to check role
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", session.user.id)
-    .single();
+  const profile = await getProfile(session.user.id);
 
   if (profile?.role === "admin") {
     redirect("/admin/dashboard"); // Redirect admin to admin dashboard

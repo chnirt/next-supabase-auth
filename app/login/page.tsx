@@ -1,28 +1,11 @@
 "use client";
 
-import { createClient } from "@/utils/supabase/client";
+import { signInWithAzure } from "@/services/auth";
 
 export default function LoginPage() {
-  const supabase = createClient();
-
   const handleLogin = async () => {
     try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: "azure",
-        options: {
-          scopes: "openid email profile",
-          redirectTo: `${window.location.origin}/auth/callback`,
-        },
-      });
-
-      if (error) {
-        console.error("Login error:", error.message);
-        return;
-      }
-
-      if (data?.url) {
-        window.location.href = data.url;
-      }
+      await signInWithAzure();
     } catch (err) {
       console.error("Unexpected error during login:", err);
     }
