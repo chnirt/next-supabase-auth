@@ -16,7 +16,7 @@ export default async function AdminDashboard() {
   const profile = await getProfile(session.user.id);
 
   if (profile?.role !== "admin") {
-    redirect("/unauthorized"); // Or show an unauthorized access page
+    redirect("/"); // Or show an unauthorized access page
   }
 
   return (
